@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameRules {
+    private static int newCol;
+
     public static class PiecePosition {
         int row, col;
         Piece piece;
@@ -53,9 +55,43 @@ public class GameRules {
         }
         return false;
     }
-    public static boolean Checkmate()
+    public static boolean Checkmate(ChessBoard game, String kingColor)
     {
-        return false;
+        PiecePosition kingPos = FindKingPosition(game, kingColor);
+        if (kingPos == null || !CheckKing(game, kingColor)) return false;
+
+        int[] rowPossibleMoves = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] colPossibleMoves = {-1, 0, 1, -1, 1, -1, 0, 1};
+        for (int i = 0; i < 8; i++) {
+            int newRow = kingPos.row + rowPossibleMoves[i];
+            int newCol = kingPos.col + colPossibleMoves[i];
+            if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8){
+                if (isValidMove(game, kingPos.row, kingPos.col, newRow,newCol))
+                {
+                    return false;
+                }
+            }
+
+        }
+
+        for (PiecePosition position : getOpponentPositions(game,kingColor))
+        {
+            Piece piece = position.piece;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (piece.isValidMove(position.row, position.col, i,j, game.getPieces()) &&
+                    isValidMove(game,position.row, position.col, i,j))
+                    {
+                        return false;
+                    }
+
+                }
+            }
+        }
+
+
+
+        return true;
     }
 
     public static boolean isValidMove(ChessBoard game,int startRow, int startCol, int endRow, int endCol){
