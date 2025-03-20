@@ -46,6 +46,11 @@ class MoveListener implements ActionListener {
                     if (GameRules.CheckKing(game, opponentColor)) {
                         JOptionPane.showMessageDialog(null, "Check! " + (opponentColor.equals("w") ? "White" : "Black") + " king is in danger!");
                     }
+
+                    if (GameRules.Checkmate(game, opponentColor)) {
+                        JOptionPane.showMessageDialog(null, "Checkmate! " + (opponentColor.equals("w") ? "Black" : "White") + " team won !");
+                        System.exit(0);
+                    }
                 }
 
             } else
